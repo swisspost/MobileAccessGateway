@@ -309,6 +309,13 @@
 			<version>${camel-version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.openehealth.ipf.commons</groupId>
+			<artifactId>ipf-commons-ihe-xds</artifactId>
+			<version>${ipf-version}</version>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
 
 	</dependencies>
 

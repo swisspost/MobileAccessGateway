@@ -29,23 +29,24 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+
+    # Below we need to temporarily disable
+    #- name: Generate the Jacoco report
+    #  run: mvn jacoco:report
     
-    - name: Generate the Jacoco report
-      run: mvn jacoco:report
+    #- name: Generate JaCoCo Badge
+    #  id: jacoco
+    #  uses: cicirello/jacoco-badge-generator@v2.11.0
+    #- name: Log coverage percentage
+    #  run: |
+    #    echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
+    #    echo "branch coverage = ${{ steps.jacoco.outputs.branches }}"
     
-    - name: Generate JaCoCo Badge
-      id: jacoco
-      uses: cicirello/jacoco-badge-generator@v2.11.0
-    - name: Log coverage percentage
-      run: |
-        echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
-        echo "branch coverage = ${{ steps.jacoco.outputs.branches }}"
-    
-    - name: Upload JaCoCo coverage report
-      uses: actions/upload-artifact@v2
-      with:
-          name: jacoco-report
-          path: target/site/jacoco/
+    #- name: Upload JaCoCo coverage report
+     # uses: actions/upload-artifact@v4
+     # with:
+     #     name: jacoco-report
+     #     path: target/site/jacoco/
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph

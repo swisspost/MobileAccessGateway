@@ -56,11 +56,11 @@ jobs:
     - name: Upload mag artifact snapshot jar
       uses: actions/upload-artifact@v4
       with:
-        name: mag-jar
+        name: mag-jar-simple--${{ github.sha }}
         path: target/mobile-access-gateway-1.0-SNAPSHOT.jar
 
     - name: Upload mag artifact snapshot spring-boot jar
       uses: actions/upload-artifact@v4
       with:
-        name: mag-jar
+        name: mag-jar-Springboot--${{ github.sha }}
         path: target/mobile-access-gateway-1.0-SNAPSHOT-spring-boot.jar

@@ -52,7 +52,9 @@ public class IdRequestConverter extends BaseRequestConverter {
             
             GetDocumentsQuery query = new GetDocumentsQuery();
             final QueryRegistry queryRegistry = new QueryRegistry(query);            
-            query.setUuids(Collections.singletonList(uuid));
+            //query.setUuids(Collections.singletonList(uuid));
+            query.setLogicalUuid(Collections.singletonList(uuid));
+            query.setMetadataLevel(1);
             queryRegistry.setReturnType((getLeafClass) ? QueryReturnType.LEAF_CLASS : QueryReturnType.OBJECT_REF);
             return queryRegistry;
         }

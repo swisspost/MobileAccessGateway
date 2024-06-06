@@ -13,20 +13,20 @@ spec:
       labels:
         app: windseeker-mag
     spec:
-      initContainers:
-        - name: windseeker-mag
-          image: windseeker-mag
-          imagePullPolicy: IfNotPresent
-          resources:
-            limits:
-              memory: 512Mi
-              cpu: 250m
-            requests:
-              memory: 512Mi
-              cpu: 250m
-          volumeMounts:
-            - name: windseeker-mag-tmp-volume
-              mountPath: /tmp
+#      initContainers:
+#        - name: windseeker-mag
+#          image: windseeker-mag
+#          imagePullPolicy: IfNotPresent
+#          resources:
+#            limits:
+#              memory: 512Mi
+#              cpu: 250m
+#            requests:
+#              memory: 512Mi
+#              cpu: 250m
+#          volumeMounts:
+#            - name: windseeker-mag-tmp-volume
+#              mountPath: /tmp
       containers:
         - name: windseeker-mag
           image: windseeker-mag
@@ -37,20 +37,20 @@ spec:
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
-              port: containerPort
+              port: 8080
             failureThreshold: 5
             initialDelaySeconds: 3
             periodSeconds: 15
           startupProbe:
             httpGet:
               path: /actuator/health/liveness
-              port: containerPort
+              port: 8080
             failureThreshold: 30
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
-              port: containerPort
+              port: 8080
             failureThreshold: 5
             initialDelaySeconds: 3
             periodSeconds: 15

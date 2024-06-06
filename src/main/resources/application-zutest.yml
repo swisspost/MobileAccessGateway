@@ -1,0 +1,132 @@
+# General configuration of the Mobile Access Gateway
+
+mag:
+  baseurl: http://localhost
+  client-ssl:
+    enabled: true
+    key-store:
+      path: ${MAG_CLIENT_SSL_KEYSTORE_PATH:src/main/resources/Dev_Support.pfx}
+      password: ${MAG_CLIENT_SSL_KEYSTORE_PASSWORD:DEVSUPPORT}
+      base64: ${MAG_CLIENT_SSL_KEYSTORE_BASE64}
+    truststore:
+      path: ${MAG_CLIENT_SSL_TRUSTSTORE_PATH:src/main/resources/keystore.jks}
+      password: a1b2c3
+    cert-alias: ${MAG_CLIENT_SSL_CERT_ALIAS:devsupport}
+  xds:
+    https: true
+    iti-18:
+      url: ws.epr.zu.test.post-ehealth.ch/Registry/services/RegistryService
+    #      url: ehealthsuisse.ihe-europe.net:10443/xdstools7/sim/default__ahdis/reg/sq
+    iti-43:
+      url: ws.epr.zu.test.post-ehealth.ch/Repository/services/RepositoryService
+    #      url: ehealthsuisse.ihe-europe.net:10443/xdstools7/sim/default__ahdis/rep/ret
+    iti-41:
+      url: ws.epr.zu.test.post-ehealth.ch/Repository/services/RepositoryService
+    #      url: ehealthsuisse.ihe-europe.net:10443/xdstools7/sim/default__ahdis/rep/prb
+    iti-57:
+      url: ws.epr.zu.test.post-ehealth.ch/Registry/services/RegistryService
+    #      url: ehealthsuisse.ihe-europe.net:10443/xdstools7/sim/default__ahdis/rep/prb
+    retrieve:
+      url: ${DOCUMENT_RETRIEVE_URL:/camel/xdsretrieve}
+      repositoryUniqueId:
+  pix:
+    https: true
+    iti-45:
+      url: ws.epr.zu.test.post-ehealth.ch/UPIProxy/services/PIXPDQV3ManagerService
+    #      url: ehealthsuisse.ihe-europe.net:10443/PAMSimulator-ejb/PIXManager_Service/PIXManager_PortType
+    iti-44:
+      url: ws.epr.zu.test.post-ehealth.ch/UPIProxy/services/PIXPDQV3ManagerService
+    #      url: ehealthsuisse.ihe-europe.net:10443/PAMSimulator-ejb/PIXManager_Service/PIXManager_PortType
+    iti-47:
+      url: ws.epr.zu.test.post-ehealth.ch/UPIProxy/services/PIXPDQV3ManagerService
+    #      url: ehealthsuisse.ihe-europe.net:10443/PAMSimulator-ejb/PDQSupplier_Service/PDQSupplier_PortType
+    oids:
+      sender: 1.3.6.1.4.1.21367.2017.2.2.108
+      receiver: 1.3.6.1.4.1.12559.11.25.1.10
+      query: 1.3.6.1.4.1.21367.2017.2.1.104
+      custodian: 1.3.6.1.4.1.21367.2017.2.5.83
+      mpi-pid: 1.3.6.1.4.1.12559.11.20.1
+  iua:
+    idp:
+      name: idp-ehealthsuisse
+      #      metadata-url: idp-metadata.xml
+      #      metadata-url: classpath:/idp-metadata.xml
+      metadata-url: ${matadata-idp-location}
+      key-store: keystore.jks
+      key-store-password: a1b2c3
+      key-alias: gateway
+      key-password: a1b2c3
+      tls-key-alias:
+      tls-key-password:
+    sp:
+      entity-id: mobileaccessgateway.pagekite.me
+      disable-code-challenge: false
+    ap:
+      url: https://ws.epr.zu.test.post-ehealth.ch/EPDSTS/services/SecurityTokenService
+      wsdl: classpath:/local-WSDL/wsdl/ws-trust-1.3.wsdl
+      endpoint-name: "{http://docs.oasis-open.org/ws-sx/ws-trust/200512/wsdl}SecurityTokenService_Port"
+    #    ap:
+    #      url: https://ehealthsuisse.ihe-europe.net/STS
+    #      wsdl: https://ehealthsuisse.ihe-europe.net/STS?wsdl
+    clients:
+      oauthdebugger:
+        secret: demosecret
+        redirect: https://oauthdebugger.com/debug
+      playground:
+        secret: secret
+        redirect: https://developers.google.com/oauthplayground
+
+  audit:
+    audit-enabled: false
+    audit-tls-enabled: false
+    # in productive system audit-source-id must be same as audit-enterprise-site-id
+    audit-enterprise-site-id: 1.3.6.1.4.1.21367.2017.2.7.109
+    #audit-repository-host: 147.135.232.177
+    #audit-repository-port: 3001
+#    audit-repository-transport: UDP
+
+# https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#server-properties
+
+server:
+  max-http-header-size: 15000
+  ssl:
+    key-store: classpath:example-server-certificate.p12
+    key-store-password: a1b2c3
+    key-store-type: pkcs12
+    key-alias: server
+  port: 9091 # Application listening port for HTTPS
+  http:
+    port: 8080 # Application listening port for HTTP. Remove line to disable.
+  servlet:
+    session:
+      timeout: 15m # Session duration must give the users enough time to fill out identity provider login pages
+  error:
+    whitelabel:
+      enabled: false
+logging:
+  level:
+    root: warn
+    ch.bfh.ti.i4mi: debug
+
+camel:
+  springboot:
+    xmlRoutes: false
+    main-run-controller: true
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+# https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#core-properties
+spring:
+  application:
+    name: mobile-access-gateway
+#  proxy:
+#    http:
+#      host: localhost
+#      port: 3128
+#    https:
+#      host: localhost
+#      port: 3128

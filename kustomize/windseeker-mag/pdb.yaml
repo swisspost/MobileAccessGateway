@@ -1,0 +1,9 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: windseeker-mag-pdb
+spec:
+  minAvailable: 1 # minimum number of pods that must be available (should be less than the replicas)
+  selector:
+    matchLabels:
+      app: windseeker-mag

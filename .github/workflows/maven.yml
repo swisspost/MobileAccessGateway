@@ -34,6 +34,11 @@ jobs:
       with:
         name: Package
         path: staging
+    - name: GetVersion
+      uses: ./
+      id: getVersion
+    - name: Print the version
+      run: echo "The version we just got is ${{ steps.getVersion.outputs.version }}"
 
     # Below we need to temporarily disable
     #- name: Generate the Jacoco report

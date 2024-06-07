@@ -34,12 +34,20 @@ jobs:
       with:
         name: Package
         path: staging
-    - name: GetVersion
-      uses: ./
-      id: getVersion
-    - name: Print the version
-      run: echo "The version we just got is ${{ steps.getVersion.outputs.version }}"
+    - name: Set Release version env variable
+      run: |
+          echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
 
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.RELEASE_VERSION }}
+          release_name: Release ${{ env.RELEASE_VERSION }}
+          draft: false
+          prerelease: false
     # Below we need to temporarily disable
     #- name: Generate the Jacoco report
     #  run: mvn jacoco:report

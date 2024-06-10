@@ -48,7 +48,7 @@ jobs:
 
     - name: List files in the folder staging
       run: |
-        ls ${{ github.workspace }}/target
+        ls ${{ github.workspace }}
 
     - name: Create Release
       id: create_release

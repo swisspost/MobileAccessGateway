@@ -44,7 +44,7 @@ jobs:
         ls ${{ github.workspace }}
 
     - name: Create package
-      run: zip -r ${{ env.RELEASE_VERSION }}.zip staging
+      run: zip -r mag-${{ env.RELEASE_VERSION }}.zip staging
 
     - name: List files in the folder staging
       run: |

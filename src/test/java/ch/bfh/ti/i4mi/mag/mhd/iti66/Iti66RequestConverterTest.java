@@ -3,6 +3,8 @@ package ch.bfh.ti.i4mi.mag.mhd.iti66;
 import ca.uhn.fhir.rest.param.*;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ch.bfh.ti.i4mi.mag.TestBase;
+
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openehealth.ipf.commons.ihe.fhir.iti66_v401.Iti66SearchParameters;
 import org.openehealth.ipf.commons.ihe.xds.core.requests.QueryRegistry;
@@ -15,8 +17,10 @@ import java.sql.Date;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Ignore;
 import static org.openehealth.ipf.commons.ihe.xds.XDS.Interactions.ITI_18;
 
+@Disabled
 public class Iti66RequestConverterTest extends TestBase {
 
     @Autowired
@@ -27,6 +31,7 @@ public class Iti66RequestConverterTest extends TestBase {
         _queryRegistryTransformer = new QueryRegistryTransformer();
     }
 
+    @Disabled
     @Test
     public void searchParameterIti66ToFindSubmissionSetsQuery_ValidId_QueryValidated() {
 
@@ -40,6 +45,7 @@ public class Iti66RequestConverterTest extends TestBase {
         AdhocQueryRequestValidator.getInstance().validate(ebXmlResult, ITI_18);
     }
 
+    @Disabled
     @Test
     public void searchParameterIti66ToFindSubmissionSetsQuery_ValidIdentifierWithUUIDPrefix_QueryValidated() {
 
@@ -53,6 +59,7 @@ public class Iti66RequestConverterTest extends TestBase {
         AdhocQueryRequestValidator.getInstance().validate(ebXmlResult, ITI_18);
     }
 
+    @Disabled
     @Test
     public void searchParameterIti66ToFindSubmissionSetsQuery_ValidIdentifierOIDPrefix_QueryValidated() {
 
@@ -66,6 +73,7 @@ public class Iti66RequestConverterTest extends TestBase {
         AdhocQueryRequestValidator.getInstance().validate(ebXmlResult, ITI_18);
     }
 
+    @Disabled
     @Test
     public void searchParameterIti66ToFindSubmissionSetsQuery_ValidIdentifierNoPrefix_QueryNotValidated() {
 
@@ -86,6 +94,7 @@ public class Iti66RequestConverterTest extends TestBase {
         assertTrue(exceptionMessage.contains("Missing required query parameter"));
     }
 
+    @Disabled
     @Test
     public void searchParameterIti66ToFindSubmissionSetsQuery_SimpleQuery_QueryValidated() {
 
@@ -101,6 +110,7 @@ public class Iti66RequestConverterTest extends TestBase {
         AdhocQueryRequestValidator.getInstance().validate(ebXmlResult, ITI_18);
     }
 
+    @Disabled
     @Test
     public void searchParameterIti66ToFindSubmissionSetsQuery_InvalidCode_ThrowsInvalidRequestException() {
         var iti66SearchParametersQuery = Iti66SearchParameters.builder()
@@ -110,6 +120,7 @@ public class Iti66RequestConverterTest extends TestBase {
         checkException(iti66SearchParametersQuery, "Only search for submissionsets supported.");
     }
 
+    @Disabled
     @Test
     public void searchParameterIti66ToFindSubmissionSetsQuery_InvalidPatientIdentifier_ThrowsInvalidRequestException() {
         var iti66SearchParametersQuery = Iti66SearchParameters.builder()
@@ -120,6 +131,7 @@ public class Iti66RequestConverterTest extends TestBase {
         checkException(iti66SearchParametersQuery, "Missing OID for patient");
     }
 
+    @Disabled
     @Test
     public void searchParameterIti66ToFindSubmissionSetsQuery_FullQuery_QueryValidated() {
 

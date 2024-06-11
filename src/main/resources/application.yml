@@ -110,3 +110,7 @@ management:
     health:
       probes:
         enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: [ "metrics","prometheus","actuator","health", "liveness" ]

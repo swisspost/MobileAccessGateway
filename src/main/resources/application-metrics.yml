@@ -100,13 +100,17 @@ camel:
     xmlRoutes: false
     main-run-controller: true
 
-# https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#core-properties
-spring:
-  application:
-    name: mobile-access-gateway
-
 management:
   endpoint:
     health:
       probes:
         enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: ["metrics","prometheus"]
+
+# https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#core-properties
+spring:
+  application:
+    name: mobile-access-gateway

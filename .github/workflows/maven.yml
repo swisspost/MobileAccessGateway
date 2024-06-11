@@ -10,7 +10,7 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "master", "feature" ]
+    branches: [ "master", "feature", "release" ]
   pull_request:
     branches: [ "master" ]
 
@@ -21,15 +21,76 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up JDK 11
-      uses: actions/setup-java@v3
       with:
-        java-version: '11'
-        distribution: 'adopt'
+        fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - run: mkdir staging && cp target/*.jar staging
 
+    - name: Cache SonarCloud packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+    - name: Cache Maven packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+    - name: Build and analyze
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} ## This needs to be configured
+      run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=swisspost_mobile-access-gateway
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Package
+        path: staging
+    - name: Set Release version env variable
+      run: |
+          echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+
+    - name: List files in the repository
+      run: |
+        ls ${{ github.workspace }}
+
+    - name: Create package
+      run: zip -r mag-${{ env.RELEASE_VERSION }}.zip staging
+
+    - name: List files in the folder staging
+      run: |
+        ls ${{ github.workspace }}
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ env.RELEASE_VERSION }}
+        release_name: Release ${{ env.RELEASE_VERSION }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+        asset_path: ./mag-${{ env.RELEASE_VERSION }}.zip
+        asset_name: mag-${{ env.RELEASE_VERSION }}.zip
+        asset_content_type: application/zip
     # Below we need to temporarily disable
     #- name: Generate the Jacoco report
     #  run: mvn jacoco:report
@@ -52,15 +113,3 @@ jobs:
     # Also needs to be disable due to failures in the current repository
     #- name: Update dependency graph
     #  uses: advanced-security/maven-dependency-submission-action@v3
-
-    - name: Upload mag artifact snapshot jar
-      uses: actions/upload-artifact@v4
-      with:
-        name: mag-jar-simple--${{ github.sha }}
-        path: target/mobile-access-gateway-1.0-SNAPSHOT.jar
-
-    - name: Upload mag artifact snapshot spring-boot jar
-      uses: actions/upload-artifact@v4
-      with:
-        name: mag-jar-Springboot--${{ github.sha }}
-        path: target/mobile-access-gateway-1.0-SNAPSHOT-spring-boot.jar

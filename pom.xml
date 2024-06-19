@@ -36,6 +36,9 @@
 
 
 		<start-class>ch.bfh.ti.i4mi.mag.MobileAccessGateway</start-class>
+		<!-- Swiss Post specific -->
+		<sonar.organization>swisspost</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 
 

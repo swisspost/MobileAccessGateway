@@ -60,16 +60,8 @@ jobs:
       run: |
           echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
 
-    - name: List files in the repository
-      run: |
-        ls ${{ github.workspace }}
-
     - name: Create package
       run: zip -r mag-${{ env.RELEASE_VERSION }}.zip staging
-
-    - name: List files in the folder staging
-      run: |
-        ls ${{ github.workspace }}
 
     ### https://github.com/marketplace/actions/github-tag
 

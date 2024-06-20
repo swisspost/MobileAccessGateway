@@ -51,6 +51,21 @@ jobs:
         name: jacoco-report
         path: target/site/jacoco/
 
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: target/surefire-reports
+
+    - name: Publish test report
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Unit Test Report
+        path: target/surefire-reports/*.xml
+        reporter: junit
+        fail-on-error: false
+
     - name: Cache SonarCloud packages
       uses: actions/cache@v4
       with:

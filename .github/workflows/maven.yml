@@ -50,7 +50,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} ## This needs to be configured
-      run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=swisspost_mobile-access-gateway -Pcoverage
+      run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=swisspost_mobile-access-gateway
 
     - uses: actions/upload-artifact@v4
       with:
@@ -60,16 +60,8 @@ jobs:
       run: |
           echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
 
-    - name: List files in the repository
-      run: |
-        ls ${{ github.workspace }}
-
     - name: Create package
       run: zip -r mag-${{ env.RELEASE_VERSION }}.zip staging
-
-    - name: List files in the folder staging
-      run: |
-        ls ${{ github.workspace }}
 
     ### https://github.com/marketplace/actions/github-tag
 

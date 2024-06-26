@@ -92,8 +92,16 @@ server:
     whitelabel:
       enabled: false
 logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"
   level:
     root: info
+    org.springframework.security: DEBUG
+  appender:
+    console:
+      enabled: true
+    file:
+      enabled: false
 
 camel:
   springboot:
@@ -113,4 +121,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: [ "metrics","prometheus","actuator","health", "liveness" ]
+        include: [ "metrics","prometheus","actuator","health", "liveness","beans","info" ]

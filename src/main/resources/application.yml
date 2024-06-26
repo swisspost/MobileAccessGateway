@@ -122,3 +122,4 @@ management:
     web:
       exposure:
         include: [ "metrics","prometheus","actuator","health", "liveness","beans","info" ]
+      base-path: /actuator

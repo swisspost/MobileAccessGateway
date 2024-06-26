@@ -121,4 +121,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: [ "metrics","prometheus","actuator","health", "liveness" ]
+        include: [ "metrics","prometheus","actuator","health", "liveness","beans","info" ]

@@ -3,6 +3,7 @@ package ch.bfh.ti.i4mi.mag;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.firewall.HttpFirewall;
@@ -24,12 +25,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.httpFirewall(customHttpFirewall());
+    }
+
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
                 .antMatchers("/actuator/health/**", "/actuator/info").permitAll() // Whitelist health check endpoints
-                .anyRequest().authenticated()
-                .and()
-                .httpFirewall(customHttpFirewall()); // Apply custom firewall
+                .anyRequest().authenticated();
     }
 }

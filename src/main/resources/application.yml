@@ -96,8 +96,9 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"
   level:
     root: info
-    org.springframework.security: DEBUG
-    org.openehealth.ipf.commons.ihe: DEBUG  # Ensure the IPF logs are at the desired level
+    org.springframework.security: debug
+    org.openehealth.ipf.commons.ihe: debug  # Ensure the IPF logs are at the desired level
+    ch.bfh.ti.i4mi: debug
   appender:
     console:
       enabled: true

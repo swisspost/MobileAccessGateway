@@ -97,6 +97,7 @@ logging:
   level:
     root: info
     org.springframework.security: DEBUG
+    org.openehealth.ipf.commons.ihe: DEBUG  # Ensure the IPF logs are at the desired level
   appender:
     console:
       enabled: true
@@ -123,3 +124,9 @@ management:
       exposure:
         include: [ "metrics","prometheus","actuator","health", "liveness","beans","info" ]
       base-path: /actuator
+
+# Configure system properties for IPF
+system:
+  properties:
+    org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.DISABLED: true
+    org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.CONSOLE: true

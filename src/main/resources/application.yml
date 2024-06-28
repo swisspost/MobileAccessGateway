@@ -136,10 +136,8 @@ system:
 # W3C Trace-Id and related recommendations
 # https://www.w3.org/TR/trace-context/
 sleuth:
+  enabled: true
   propagation:
     type: W3C
   sampler:
     probability: 1.0
-  traceId128: true  # Enable 128-bit TraceId
-  web:
-    enabled: true

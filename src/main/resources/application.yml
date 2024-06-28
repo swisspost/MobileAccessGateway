@@ -93,7 +93,7 @@ server:
       enabled: false
 logging:
   pattern:
-    console: "%d{dd-MMM-yyyy HH:mm:ss.SSS} %-5level [%thread] %logger{36} %msg%n"
+    console: "%d{dd-MMM-yyyy HH:mm:ss.SSS} [%X{traceId}] [%X{spanId}] %-5level [%thread] %logger{36} %msg%n"
 
   level:
     root: info
@@ -132,3 +132,12 @@ system:
   properties:
     org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.DISABLED: true
     org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.CONSOLE: true
+
+# W3C Trace-Id and related recommendations
+# https://www.w3.org/TR/trace-context/
+sleuth:
+  enabled: true
+  propagation:
+    type: W3C
+  sampler:
+    probability: 1.0

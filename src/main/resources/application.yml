@@ -159,3 +159,5 @@ sleuth:
     servlet:
       enabled: true
     filter-order: 0
+  zipkin:
+    enabled: false

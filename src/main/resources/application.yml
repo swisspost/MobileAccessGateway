@@ -98,7 +98,7 @@ server:
 
 logging:
   pattern:
-    console: "%d{dd-MMM-yyyy HH:mm:ss.SSS} [%X{traceId}] [%X{spanId}] %-5level [%thread] %logger{36} %msg%n"
+    console: "%d{dd-MMM-yyyy HH:mm:ss.SSS} [%X{traceId}/%X{spanId}] %-5level [%thread] %logger{36} %msg%n"
     #"%d{dd-MMM-yyyy HH:mm:ss.SSS} [%X{traceId}] [%X{spanId}] %-5level [%thread] %logger{36} %msg%n"
 
   level:
@@ -126,7 +126,32 @@ camel:
 spring:
   application:
     name: mobile-access-gateway
-
+  # W3C Trace-Id and related recommendations
+  # https://www.w3.org/TR/trace-context/
+  sleuth:
+    enabled: true
+    propagation:
+      type: CUSTOM
+    sampler:
+      probability: 1.0
+    baggage:
+      remote-fields:
+        - tracestate
+    trace-id128: true
+    supportsJoin: false
+    web:
+      client:
+        enabled: true
+      servlet:
+        enabled: true
+      filter-order: 0
+    zipkin:
+      enabled: false
+  log:
+    slf4j:
+      whitelisted-mdc-keys:
+        - traceId
+        - spanId
 management:
   endpoint:
     health:
@@ -144,20 +169,3 @@ system:
     org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.DISABLED: true
     org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.CONSOLE: true
 
-# W3C Trace-Id and related recommendations
-# https://www.w3.org/TR/trace-context/
-sleuth:
-  enabled: true
-  propagation:
-    type: W3C
-  sampler:
-    probability: 1.0
-  trace-id128: true
-  web:
-    client:
-      enabled: true
-    servlet:
-      enabled: true
-    filter-order: 0
-  zipkin:
-    enabled: false

@@ -91,15 +91,26 @@ server:
   error:
     whitelabel:
       enabled: false
+  jetty:
+    accesslog:
+      enabled: true
+      use-slf4j: true
+
 logging:
   pattern:
-    console: "%d{dd-MMM-yyyy HH:mm:ss.SSS} %-5level [%thread] %logger{36} %msg%n"
+    console: "%d{dd-MMM-yyyy HH:mm:ss.SSS} [%X{traceId}/%X{spanId}] %-5level [%thread] %logger{36} %msg%n"
+    #"%d{dd-MMM-yyyy HH:mm:ss.SSS} [%X{traceId}] [%X{spanId}] %-5level [%thread] %logger{36} %msg%n"
 
   level:
     root: info
     org.springframework.security: debug
     org.openehealth.ipf.commons.ihe: debug  # Ensure the IPF logs are at the desired level
     ch.bfh.ti.i4mi: debug
+    org.eclipse.jetty.server.RequestLog: debug
+    org.springframework.web.servlet.DispatcherServlet: debug
+    org.springframework.cloud.sleuth: debug
+    org.springframework.web: debug
+    org.springframework.http: debug
   appender:
     console:
       enabled: true
@@ -115,7 +126,32 @@ camel:
 spring:
   application:
     name: mobile-access-gateway
-
+  # W3C Trace-Id and related recommendations
+  # https://www.w3.org/TR/trace-context/
+  sleuth:
+    enabled: true
+    propagation:
+      type: CUSTOM
+    sampler:
+      probability: 1.0
+    baggage:
+      remote-fields:
+        - tracestate
+    trace-id128: true
+    supportsJoin: false
+    web:
+      client:
+        enabled: true
+      servlet:
+        enabled: true
+      filter-order: 0
+    zipkin:
+      enabled: false
+  log:
+    slf4j:
+      whitelisted-mdc-keys:
+        - traceId
+        - spanId
 management:
   endpoint:
     health:
@@ -132,3 +168,4 @@ system:
   properties:
     org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.DISABLED: true
     org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.CONSOLE: true
+

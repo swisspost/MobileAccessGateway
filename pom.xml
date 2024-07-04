@@ -33,6 +33,7 @@
 		<opensaml-version>2.6.6</opensaml-version>
 		<spring-security-saml2-core-version>1.0.10.RELEASE</spring-security-saml2-core-version>
 		<velocity-version>2.3</velocity-version>
+		<spring-cloud.version>2021.0.5</spring-cloud.version>
 
 
 		<start-class>ch.bfh.ti.i4mi.mag.MobileAccessGateway</start-class>
@@ -69,6 +70,15 @@
 				<groupId>org.openehealth.ipf</groupId>
 				<artifactId>ipf-dependencies</artifactId>
 				<version>${ipf-version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<!-- W3C TraceId -->
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -153,6 +163,19 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jetty</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-servlets</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-util</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
 		</dependency>
 
 		<dependency>
@@ -311,6 +334,24 @@
 			<artifactId>camel-test-spring</artifactId>
 			<version>${camel-version}</version>
 			<scope>test</scope>
+		</dependency>
+
+		<!-- W3C TraceId -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-sleuth</artifactId>
+			<version>3.1.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-sleuth-brave</artifactId>
+			<version>3.1.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>
 		</dependency>
 
 	</dependencies>

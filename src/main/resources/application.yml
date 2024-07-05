@@ -98,8 +98,7 @@ server:
 
 logging:
   pattern:
-    console: "%d{dd-MMM-yyyy HH:mm:ss.SSS} [%X{traceId}/%X{spanId}] %-5level [%thread] %logger{36} %msg%n"
-    #"%d{dd-MMM-yyyy HH:mm:ss.SSS} [%X{traceId}] [%X{spanId}] %-5level [%thread] %logger{36} %msg%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{traceId}/%X{spanId}] [%X{requestId}] %-5level [%thread] %logger{36} - %X{traceparent} - %X{tracestate} - %msg%n"
 
   level:
     root: info
@@ -114,6 +113,7 @@ logging:
   appender:
     console:
       enabled: true
+      immediateFlush: true
     file:
       enabled: false
 

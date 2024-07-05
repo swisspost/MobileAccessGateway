@@ -11,13 +11,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 @Component
 public class TraceHeaderLoggingFilter implements Filter {
     private static final Logger logger = LoggerFactory.getLogger(TraceHeaderLoggingFilter.class);
 
     @Override
-    public void doFilter(javax.servlet.ServletRequest servletRequest, javax.servlet.ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
@@ -27,12 +29,9 @@ public class TraceHeaderLoggingFilter implements Filter {
         String b3TraceId = request.getHeader("X-B3-TraceId");
         String b3SpanId = request.getHeader("X-B3-SpanId");
 
-        // Log the headers
-        logger.info("Traceparent: {}",traceparent);
-        logger.info("Tracestate: {}", tracestate);
-        logger.info("B3: {}", b3);
-        logger.info("X-B3-TraceId: {}", b3TraceId);
-        logger.info("X-B3-SpanId: {}", b3SpanId);
+        // Log the headers in a structured format
+        logger.info("Trace headers: traceparent={}, tracestate={}, b3={}, X-B3-TraceId={}, X-B3-SpanId={}",
+                traceparent, tracestate, b3, b3TraceId, b3SpanId);
 
         // Add the headers to MDC for logging
         MDC.put("traceparent", traceparent);
@@ -45,11 +44,7 @@ public class TraceHeaderLoggingFilter implements Filter {
             filterChain.doFilter(request, response);
         } finally {
             // Clean up MDC
-            MDC.remove("traceparent");
-            MDC.remove("tracestate");
-            MDC.remove("b3");
-            MDC.remove("X-B3-TraceId");
-            MDC.remove("X-B3-SpanId");
+            MDC.clear();  // This removes all MDC entries
         }
     }
 }

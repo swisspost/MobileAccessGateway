@@ -11,11 +11,20 @@ public class LoggingSpanHandler extends SpanHandler {
 
     @Override
     public boolean begin(TraceContext context, MutableSpan span, TraceContext parent) {
-        logger.info("Trace ID: {}", context.traceIdString());
-        logger.info("Span ID: {}", context.spanIdString());
-        if (parent != null) {
-            logger.info("Parent Span ID: {}", parent.spanIdString());
-        }
+        logger.info("Span started: traceId={}, spanId={}, parentId={}",
+                context.traceIdString(),
+                context.spanIdString(),
+                parent != null ? parent.spanIdString() : "none");
+        return true;
+    }
+
+    @Override
+    public boolean end(TraceContext context, MutableSpan span, Cause cause) {
+        logger.info("Span completed: traceId={}, spanId={}, name={}, duration={}ms",
+                context.traceIdString(),
+                context.spanIdString(),
+                span.name(),
+                span.finishTimestamp() - span.startTimestamp());
         return true;
     }
 }

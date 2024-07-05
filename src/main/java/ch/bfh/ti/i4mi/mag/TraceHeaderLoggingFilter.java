@@ -9,9 +9,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 public class TraceHeaderLoggingFilter implements Filter {
+    private static final Logger logger = LoggerFactory.getLogger(TraceHeaderLoggingFilter.class);
 
     @Override
     public void doFilter(javax.servlet.ServletRequest servletRequest, javax.servlet.ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -25,11 +28,11 @@ public class TraceHeaderLoggingFilter implements Filter {
         String b3SpanId = request.getHeader("X-B3-SpanId");
 
         // Log the headers
-        System.out.println("Traceparent: " + traceparent);
-        System.out.println("Tracestate: " + tracestate);
-        System.out.println("B3: " + b3);
-        System.out.println("X-B3-TraceId: " + b3TraceId);
-        System.out.println("X-B3-SpanId: " + b3SpanId);
+        logger.info("Traceparent: {}",traceparent);
+        logger.info("Tracestate: {}", tracestate);
+        logger.info("B3: {}", b3);
+        logger.info("X-B3-TraceId: {}", b3TraceId);
+        logger.info("X-B3-SpanId: {}", b3SpanId);
 
         // Add the headers to MDC for logging
         MDC.put("traceparent", traceparent);

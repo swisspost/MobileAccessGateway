@@ -152,6 +152,7 @@ spring:
       whitelisted-mdc-keys:
         - traceId
         - spanId
+        - parentId
 management:
   endpoint:
     health:

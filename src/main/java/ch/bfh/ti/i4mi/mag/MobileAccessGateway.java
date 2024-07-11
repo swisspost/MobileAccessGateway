@@ -26,9 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.spi.ValidationProvider;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Main class of the IPF Mobile Access Gateway application.
  *
@@ -47,14 +44,13 @@ public class MobileAccessGateway {
      *
      * @param args The list of CLI parameters.
      */
-    private static final Logger logger = LoggerFactory.getLogger(LoggingSpanHandler.class);
     public static void main(final String[] args) {
         log.info("Configuring Mobile Access Gateway");
         System.setProperty("org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.DISABLED", "true");
         System.setProperty("org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.CONSOLE", "true");
 
-        logger.info("PayloadLoggerBase.DISABLED: {}", System.getProperty("org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.DISABLED"));
-        logger.info("PayloadLoggerBase.CONSOLE: {}", System.getProperty("org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.CONSOLE"));
+        log.info("PayloadLoggerBase.DISABLED: {}", System.getProperty("org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.DISABLED"));
+        log.info("PayloadLoggerBase.CONSOLE: {}", System.getProperty("org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.CONSOLE"));
 
         final SpringApplication application = new SpringApplication(MobileAccessGateway.class);
         addApplicationStartupHook(application);

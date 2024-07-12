@@ -31,9 +31,9 @@ import javax.validation.spi.ValidationProvider;
  *
  * @author Oliver Egger
  */
-@SpringBootApplication
+@SpringBootApplication(exclude = {org.springframework.cloud.sleuth.autoconfig.brave.BraveAutoConfiguration.class})
 @Slf4j
-@ComponentScan(basePackages={"ch.bfh.ti.i4mi.mag","org.openehealth.ipf","org.springframework.security.saml"})	
+@ComponentScan(basePackages={"ch.bfh.ti.i4mi.mag","org.openehealth.ipf","org.springframework.security.saml"})
 // without it does not work directly with mvn and current snapshot, when running the Pixm query an error is returned   "resourceType": "OperationOutcome", "issue": [ { "severity": "error", "code": "processing", "diagnostics": "Unknown resource type 'Patient' - Server knows how to handle: [StructureDefinition, OperationDefinition]" } ]
 // it looks like the META-INF directory is not correct configured that is copied to the output, if it is added in eclipse as on open project to java/main/resources it works without above line 
 @EnableAutoConfiguration
@@ -46,6 +46,11 @@ public class MobileAccessGateway {
      */
     public static void main(final String[] args) {
         log.info("Configuring Mobile Access Gateway");
+        System.setProperty("org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.DISABLED", "true");
+        System.setProperty("org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.CONSOLE", "true");
+
+        log.info("PayloadLoggerBase.DISABLED: {}", System.getProperty("org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.DISABLED"));
+        log.info("PayloadLoggerBase.CONSOLE: {}", System.getProperty("org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.CONSOLE"));
 
         final SpringApplication application = new SpringApplication(MobileAccessGateway.class);
         addApplicationStartupHook(application);

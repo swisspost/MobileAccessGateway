@@ -90,69 +90,64 @@ class Iti67RouteBuilder extends RouteBuilder {
                 .errorHandler(noErrorHandler())
                 .process(AuthTokenConverter.addWsHeader())
                 .choice()
-                  .when(header(Constants.FHIR_REQUEST_PARAMETERS).isNotNull())
-                    .bean(Utils.class,"searchParameterToBody")
-                    .bean(Iti67RequestConverter.class)
-                    .to(metadataQueryEndpoint)
-                    .process(translateToFhir(iti67ResponseConverter, QueryResponse.class))
-                    .endChoice()
-                  .when(PredicateBuilder.and(header("FhirHttpUri").isNotNull(),header("FhirHttpMethod").isEqualTo("GET")))
-                    .bean(IdRequestConverter.class)
-                    .to(metadataQueryEndpoint)
-                    .process(translateToFhir(iti67ResponseConverter, QueryResponse.class))
-                    .endChoice()
-                  .when(PredicateBuilder.and(header("FhirHttpUri").isNotNull(),header("FhirHttpMethod").isEqualTo("PUT")))
-                    .process(exchange -> {
-                        DocumentReference documentReference = exchange.getIn().getMandatoryBody(DocumentReference.class);
-                        SubmitObjectsRequest submitObjectsRequest = iti67RequestUpdateConverter.createMetadataUpdateRequest(documentReference);
-                        exchange.getMessage().setBody(submitObjectsRequest);
-                    })
-                    .to(metadataUpdateEndpoint)
-                    .process(translateToFhir(iti67FromIti57ResponseConverter, Response.class))
-                    .endChoice()
+                .when(header(Constants.FHIR_REQUEST_PARAMETERS).isNotNull())
+                .bean(Utils.class,"searchParameterToBody")
+                .bean(Iti67RequestConverter.class)
+                .to(metadataQueryEndpoint)
+                .process(translateToFhir(iti67ResponseConverter, QueryResponse.class))
+                .when(PredicateBuilder.and(header("FhirHttpUri").isNotNull(),header("FhirHttpMethod").isEqualTo("GET")))
+                .bean(IdRequestConverter.class)
+                .to(metadataQueryEndpoint)
+                .process(translateToFhir(iti67ResponseConverter, QueryResponse.class))
+                .when(PredicateBuilder.and(header("FhirHttpUri").isNotNull(),header("FhirHttpMethod").isEqualTo("PUT")))
+                .process(exchange -> {
+                    DocumentReference documentReference = exchange.getIn().getMandatoryBody(DocumentReference.class);
+                    SubmitObjectsRequest submitObjectsRequest = iti67RequestUpdateConverter.createMetadataUpdateRequest(documentReference);
+                    exchange.getMessage().setBody(submitObjectsRequest);
+                })
+                .to(metadataUpdateEndpoint)
+                .process(translateToFhir(iti67FromIti57ResponseConverter, Response.class))
                 .when(PredicateBuilder.and(header("FhirHttpUri").isNotNull(),header("FhirHttpMethod").isEqualTo("DELETE")))
-                    .process(exchange -> {
-                        exchange.setProperty("DOCUMENT_ENTRY_LOGICAL_ID", IdRequestConverter.extractId(exchange.getIn().getHeader("FhirHttpUri", String.class)));
-                    })
-                    .bean(IdRequestConverter.class)
-                    .to(metadataQueryEndpoint)
-                    .process(exchange -> {
-                        QueryResponse queryResponse = exchange.getIn().getMandatoryBody(QueryResponse.class);
-                        if (queryResponse.getStatus() != Status.SUCCESS) {
-                            iti67FromIti57ResponseConverter.processError(queryResponse);
-                        }
-                        if (queryResponse.getDocumentEntries().isEmpty()) {
-                            throw new ResourceNotFoundException(exchange.getProperty("DOCUMENT_ENTRY_LOGICAL_ID", String.class));
-                        }
-                        if (queryResponse.getDocumentEntries().size() > 1) {
-                            throw new InternalErrorException("Expected at most one Document Entry, got " + queryResponse.getDocumentEntries().size());
-                        }
+                .process(exchange -> {
+                    exchange.setProperty("DOCUMENT_ENTRY_LOGICAL_ID", IdRequestConverter.extractId(exchange.getIn().getHeader("FhirHttpUri", String.class)));
+                })
+                .bean(IdRequestConverter.class)
+                .to(metadataQueryEndpoint)
+                .process(exchange -> {
+                    QueryResponse queryResponse = exchange.getIn().getMandatoryBody(QueryResponse.class);
+                    if (queryResponse.getStatus() != Status.SUCCESS) {
+                        iti67FromIti57ResponseConverter.processError(queryResponse);
+                    }
+                    if (queryResponse.getDocumentEntries().isEmpty()) {
+                        throw new ResourceNotFoundException(exchange.getProperty("DOCUMENT_ENTRY_LOGICAL_ID", String.class));
+                    }
+                    if (queryResponse.getDocumentEntries().size() > 1) {
+                        throw new InternalErrorException("Expected at most one Document Entry, got " + queryResponse.getDocumentEntries().size());
+                    }
 
-                        DocumentEntry documentEntry = queryResponse.getDocumentEntries().get(0);
-                        if (documentEntry.getExtraMetadata() == null) {
-                            documentEntry.setExtraMetadata(new HashMap<>());
-                        }
-                        documentEntry.getExtraMetadata().put(MagConstants.XdsExtraMetadataSlotNames.CH_DELETION_STATUS, List.of(MagConstants.DeletionStatuses.REQUESTED));
-                        if (documentEntry.getLogicalUuid() == null) {
-                            documentEntry.setLogicalUuid(documentEntry.getEntryUuid());
-                        }
-                        documentEntry.assignEntryUuid();
-                        if (documentEntry.getVersion() == null) {
-                            documentEntry.setVersion(new Version("1"));
-                        }
+                    DocumentEntry documentEntry = queryResponse.getDocumentEntries().get(0);
+                    if (documentEntry.getExtraMetadata() == null) {
+                        documentEntry.setExtraMetadata(new HashMap<>());
+                    }
+                    documentEntry.getExtraMetadata().put(MagConstants.XdsExtraMetadataSlotNames.CH_DELETION_STATUS, List.of(MagConstants.DeletionStatuses.REQUESTED));
+                    if (documentEntry.getLogicalUuid() == null) {
+                        documentEntry.setLogicalUuid(documentEntry.getEntryUuid());
+                    }
+                    documentEntry.assignEntryUuid();
+                    if (documentEntry.getVersion() == null) {
+                        documentEntry.setVersion(new Version("1"));
+                    }
 
-                        SubmissionSet submissionSet = iti67RequestUpdateConverter.createSubmissionSet();
-                        SubmitObjectsRequest updateRequest = iti67RequestUpdateConverter.createMetadataUpdateRequest(submissionSet, documentEntry);
-                        exchange.getMessage().setBody(updateRequest);
-                        log.info("Prepared document metadata update request");
-                    })
-                    .choice()
-                        .when(exchange -> exchange.getIn().getBody() instanceof SubmitObjectsRequest)
-                            .to(metadataUpdateEndpoint)
-                            .process(translateToFhir(new Iti67FromIti57ResponseConverter(config), Response.class))
-                            .endChoice()
-                        .end()
-                    .endChoice()
+                    SubmissionSet submissionSet = iti67RequestUpdateConverter.createSubmissionSet();
+                    SubmitObjectsRequest updateRequest = iti67RequestUpdateConverter.createMetadataUpdateRequest(submissionSet, documentEntry);
+                    exchange.getMessage().setBody(updateRequest);
+                    log.info("Prepared document metadata update request");
+                })
+                .choice()
+                .when(exchange -> exchange.getIn().getBody() instanceof SubmitObjectsRequest)
+                .to(metadataUpdateEndpoint)
+                .process(translateToFhir(new Iti67FromIti57ResponseConverter(config), Response.class))
+                .end()
                 .end();
     }
 }

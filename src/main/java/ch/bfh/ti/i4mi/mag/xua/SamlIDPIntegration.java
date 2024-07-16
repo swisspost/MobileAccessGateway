@@ -221,14 +221,24 @@ public class SamlIDPIntegration extends WebSecurityConfigurerAdapter implements 
 	public Map<String, IDPConfig> getIDPs() {
 		Map<String, IDPConfig> result = new HashMap<String, IDPConfig>();
 		IDPConfig defaultIdp = getDefaultIdp();
-		if (defaultIdp != null && defaultIdp.getMetadataUrl() != null) result.put(DEFAULT_IDP, defaultIdp);
+		if (defaultIdp != null) {
+			if (metadataIdpLocation != null && !metadataIdpLocation.isEmpty()) {
+				defaultIdp.setMetadataUrl(metadataIdpLocation);
+			}
+			if (defaultIdp.getMetadataUrl() != null) {
+				result.put(DEFAULT_IDP, defaultIdp);
+			}
+		}
+		log.debug("IDP Metadata URL: {}", defaultIdp != null ? defaultIdp.getMetadataUrl() : "null");
 		return result;
 	}
 
 	@ConfigurationProperties("mag.iua.idp")
 	@Bean(name = "idp")
-	public IDPConfig getDefaultIdp() {
-		return new IDPConfig();
+	public IDPConfig getDefaultIdp(){
+		IDPConfig config = new IDPConfig();
+		log.debug("Default IDP Metadata URL from properties: {}", config.getMetadataUrl());
+		return config;
 	}
 
 	@Bean

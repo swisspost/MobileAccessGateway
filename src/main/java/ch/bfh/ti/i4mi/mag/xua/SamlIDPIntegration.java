@@ -446,8 +446,9 @@ public class SamlIDPIntegration extends WebSecurityConfigurerAdapter implements 
 
 		// Use the environment variable if it's set, otherwise fall back to the config
 		String idpSSOCircleMetadataURL = metadataIdpLocation != null && !metadataIdpLocation.isEmpty()
-				? metadataIdpLocation
-				: conf.getMetadataUrl();
+				? metadataIdpLocation.trim().replaceAll("[}]$", "")
+				: conf.getMetadataUrl().trim().replaceAll("[}]$", "");
+
 		log.info("metadataIdpLocation: {}", metadataIdpLocation.trim());
 		log.info("conf.getMetadataUrl(): {}", conf.getMetadataUrl().trim());
 		log.info("Final idpSSOCircleMetadataURL: {}", idpSSOCircleMetadataURL.trim());

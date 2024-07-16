@@ -448,10 +448,10 @@ public class SamlIDPIntegration extends WebSecurityConfigurerAdapter implements 
 		String idpSSOCircleMetadataURL = metadataIdpLocation != null && !metadataIdpLocation.isEmpty()
 				? metadataIdpLocation
 				: conf.getMetadataUrl();
-		log.info("metadataIdpLocation: {}", metadataIdpLocation);
-		log.info("conf.getMetadataUrl(): {}", conf.getMetadataUrl());
-		log.info("Final idpSSOCircleMetadataURL: {}", idpSSOCircleMetadataURL);
-		File metadataFile = new File(idpSSOCircleMetadataURL);
+		log.info("metadataIdpLocation: {}", metadataIdpLocation.trim());
+		log.info("conf.getMetadataUrl(): {}", conf.getMetadataUrl().trim());
+		log.info("Final idpSSOCircleMetadataURL: {}", idpSSOCircleMetadataURL.trim());
+		File metadataFile = new File(idpSSOCircleMetadataURL.trim());
 		log.info("Metadata file exists: {}", metadataFile.exists());
 		log.info("Metadata file absolute path: {}", metadataFile.getAbsolutePath());
 		AbstractReloadingMetadataProvider prov;
@@ -472,6 +472,9 @@ public class SamlIDPIntegration extends WebSecurityConfigurerAdapter implements 
 		extendedMetadataDelegate.setMetadataTrustCheck(true);
 		extendedMetadataDelegate.setMetadataRequireSignature(false);
 		backgroundTaskTimer.purge();
+		log.debug("Current working directory: {}", System.getProperty("user.dir"));
+		log.debug("File exists: {}", new File("/idp-metadata.xml").exists());
+		log.debug("File is readable: {}", new File("/idp-metadata.xml").canRead());
 		return extendedMetadataDelegate;
 	}
 

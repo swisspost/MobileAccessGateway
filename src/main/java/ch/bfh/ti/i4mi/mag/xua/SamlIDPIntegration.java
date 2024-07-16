@@ -435,7 +435,7 @@ public class SamlIDPIntegration extends WebSecurityConfigurerAdapter implements 
 		return idpDiscovery;
 	}
 
-	@Value("${matadata-idp-location}")
+	@Value("${iua.idp.metadata-url:/idp-metadata.xml}}")
 	private String metadataIdpLocation;
 
 	public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider(String entityId)

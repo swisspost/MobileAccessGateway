@@ -89,5 +89,6 @@ public class MobileAccessGateway {
 
         // You can also add the environment variable check here
         System.out.println("matadata-idp-location env var: " + System.getenv("matadata-idp-location"));
+        System.getenv().forEach((key, value) -> log.info("{}={}", key, value));
     }
 }

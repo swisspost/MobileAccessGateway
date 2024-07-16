@@ -440,6 +440,7 @@ public class SamlIDPIntegration extends WebSecurityConfigurerAdapter implements 
 
 	public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider(String entityId)
 			throws MetadataProviderException {
+		log.info("Initializing ssoCircleExtendedMetadataProvider for entityId: {}", entityId);
 		IDPConfig conf = getIDPs().get(entityId);
 		if (conf == null) return null;
 
@@ -447,7 +448,12 @@ public class SamlIDPIntegration extends WebSecurityConfigurerAdapter implements 
 		String idpSSOCircleMetadataURL = metadataIdpLocation != null && !metadataIdpLocation.isEmpty()
 				? metadataIdpLocation
 				: conf.getMetadataUrl();
-
+		log.info("metadataIdpLocation: {}", metadataIdpLocation);
+		log.info("conf.getMetadataUrl(): {}", conf.getMetadataUrl());
+		log.info("Final idpSSOCircleMetadataURL: {}", idpSSOCircleMetadataURL);
+		File metadataFile = new File(idpSSOCircleMetadataURL);
+		log.info("Metadata file exists: {}", metadataFile.exists());
+		log.info("Metadata file absolute path: {}", metadataFile.getAbsolutePath());
 		AbstractReloadingMetadataProvider prov;
 		if (idpSSOCircleMetadataURL.startsWith("http:") || idpSSOCircleMetadataURL.startsWith("https:")) {
 			prov = new HTTPMetadataProvider(

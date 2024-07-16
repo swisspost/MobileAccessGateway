@@ -435,7 +435,7 @@ public class SamlIDPIntegration extends WebSecurityConfigurerAdapter implements 
 		return idpDiscovery;
 	}
 
-	@Value("${iua.idp.metadata-url:/idp-metadata.xml}}")
+	@Value("${iua.idp.metadata-url:/idp-metadata.xml}")
 	private String metadataIdpLocation;
 
 	public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider(String entityId)
@@ -446,8 +446,8 @@ public class SamlIDPIntegration extends WebSecurityConfigurerAdapter implements 
 
 		// Use the environment variable if it's set, otherwise fall back to the config
 		String idpSSOCircleMetadataURL = metadataIdpLocation != null && !metadataIdpLocation.isEmpty()
-				? metadataIdpLocation.trim().replaceAll("[}]$", "")
-				: conf.getMetadataUrl().trim().replaceAll("[}]$", "");
+				? metadataIdpLocation.trim()
+				: conf.getMetadataUrl().trim();
 
 		log.info("metadataIdpLocation: {}", metadataIdpLocation.trim());
 		log.info("conf.getMetadataUrl(): {}", conf.getMetadataUrl().trim());

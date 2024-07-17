@@ -6,7 +6,7 @@
 
 	<groupId>ch.bfh</groupId>
 	<artifactId>mobile-access-gateway</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.0.57</version>
 	<description>FHIR Gateway supporting the PMIR and MHD server actors and uses XDS/PIXV3 to communicate with an XDS Affinity Domain</description>
 	<packaging>jar</packaging>
 
@@ -17,7 +17,7 @@
 		<maven.compiler.target>1.11</maven.compiler.target>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 
 		<!-- plugins -->
 		<compiler-plugin-version>3.10.1</compiler-plugin-version>
@@ -37,6 +37,9 @@
 
 
 		<start-class>ch.bfh.ti.i4mi.mag.MobileAccessGateway</start-class>
+		<!-- Swiss Post specific -->
+		<sonar.organization>swisspost</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 
 
@@ -70,6 +73,7 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+
 			<!-- W3C TraceId -->
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
@@ -77,7 +81,7 @@
 				<version>${spring-cloud.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>		
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

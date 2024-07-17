@@ -91,14 +91,15 @@ server:
   error:
     whitelabel:
       enabled: false
-	jetty:
-    	accesslog:
-      		enabled: true
-      		use-slf4j: true
+  jetty:
+    accesslog:
+      enabled: true
+      use-slf4j: true
 
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{traceId}/%X{spanId}] [%X{requestId}] %-5level [%thread] %logger{36} - %X{traceparent} - %X{tracestate} - %msg%n"
+
   level:
     root: info
     org.springframework.security: debug
@@ -132,6 +133,7 @@ spring:
       type: CUSTOM
     sampler:
       probability: 1.0
+    baggage:
       remote-fields:
         - tracestate
     trace-id128: true
@@ -150,3 +152,21 @@ spring:
         - traceId
         - spanId
         - parentId
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  log:
+  endpoints:
+    web:
+      exposure:
+        include: [ "metrics","prometheus","actuator","health", "liveness","beans","info" ]
+      base-path: /actuator
+
+# Configure system properties for IPF
+system:
+  properties:
+    org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.DISABLED: true
+    org.openehealth.ipf.commons.ihe.core.payload.PayloadLoggerBase.CONSOLE: true
+
